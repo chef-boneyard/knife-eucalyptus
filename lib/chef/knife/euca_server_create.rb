@@ -177,7 +177,7 @@ class Chef
         print "\n#{ui.color("Waiting for sshd", :magenta)}"
 
         print(".") until tcp_test_ssh(display_name) {
-          sleep @initial_sleep_delay ||= 10
+          sleep @initial_sleep_delay ||= 20
           puts("done")
         }
 
