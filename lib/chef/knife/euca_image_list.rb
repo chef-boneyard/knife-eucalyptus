@@ -20,7 +20,9 @@ require 'chef/knife/euca_base'
 
 class Chef
   class Knife
-    class EucaImageList < EucaBase
+    class EucaImageList < Knife
+
+      include Knife::EucaBase
 
       banner "knife euca image list (options)"
 

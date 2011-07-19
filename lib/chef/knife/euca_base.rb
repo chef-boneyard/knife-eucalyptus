@@ -21,39 +21,45 @@ require 'chef/knife'
 
 class Chef
   class Knife
-    class EucaBase < Knife
+    module EucaBase
 
-      deps do
-        require 'fog'
-        require 'net/ssh/multi'
-        require 'readline'
-        require 'chef/json_compat'
+      # :nodoc:
+      # Would prefer to do this in a rational way, but can't be done b/c of
+      # Mixlib::CLI's design :(
+      def self.included(includer)
+        includer.class_eval do
+
+          deps do
+            require 'fog'
+            require 'net/ssh/multi'
+            require 'readline'
+            require 'chef/json_compat'
+          end
+
+          option :euca_access_key_id,
+            :short => "-A ID",
+            :long => "--euca-access-key-id KEY",
+            :description => "Your Eucalyptus Access Key ID",
+            :proc => Proc.new { |key| Chef::Config[:knife][:euca_access_key_id] = key }
+
+          option :euca_secret_access_key,
+            :short => "-K SECRET",
+            :long => "--euca-secret-access-key SECRET",
+            :description => "Your Eucalyptus API Secret Access Key",
+            :proc => Proc.new { |key| Chef::Config[:knife][:euca_secret_access_key] = key }
+
+          option :euca_api_endpoint,
+            :long => "--euca-api-endpoint ENDPOINT",
+            :description => "Your Eucalyptus API endpoint",
+            :default => "http://ecc.eucalyptus.com:8773/services/Eucalyptus",
+            :proc => Proc.new { |endpoint| Chef::Config[:knife][:euca_api_endpoint] = endpoint }
+
+          option :region,
+            :long => "--region REGION",
+            :description => "Your Eucalyptus region",
+            :proc => Proc.new { |region| Chef::Config[:knife][:region] = region }
+        end
       end
-
-      banner ""
-
-      option :euca_access_key_id,
-        :short => "-A ID",
-        :long => "--euca-access-key-id KEY",
-        :description => "Your Eucalyptus Access Key ID",
-        :proc => Proc.new { |key| Chef::Config[:knife][:euca_access_key_id] = key }
-
-      option :euca_secret_access_key,
-        :short => "-K SECRET",
-        :long => "--euca-secret-access-key SECRET",
-        :description => "Your Eucalyptus API Secret Access Key",
-        :proc => Proc.new { |key| Chef::Config[:knife][:euca_secret_access_key] = key }
-
-      option :euca_api_endpoint,
-        :long => "--euca-api-endpoint ENDPOINT",
-        :description => "Your Eucalyptus API endpoint",
-        :default => "http://ecc.eucalyptus.com:8773/services/Eucalyptus",
-        :proc => Proc.new { |endpoint| Chef::Config[:knife][:euca_api_endpoint] = endpoint }
-
-      option :region,
-        :long => "--region REGION",
-        :description => "Your Eucalyptus region",
-        :proc => Proc.new { |region| Chef::Config[:knife][:region] = region }
 
       def connection
         @connection ||= begin

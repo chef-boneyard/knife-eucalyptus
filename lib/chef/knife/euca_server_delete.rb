@@ -20,7 +20,9 @@ require 'chef/knife/euca_base'
 
 class Chef
   class Knife
-    class EucaServerDelete < EucaBase
+    class EucaServerDelete < Knife
+
+      include Knife::EucaBase
 
       banner "knife euca server delete SERVER_ID [SERVER_ID] (options)"
 

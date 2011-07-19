@@ -20,7 +20,9 @@ require 'chef/knife/euca_base'
 
 class Chef
   class Knife
-    class EucaServerList < EucaBase
+    class EucaServerList < Knife
+
+      include Knife::EucaBase
 
       banner "knife euca server list (options)"
 
@@ -41,7 +43,16 @@ class Chef
           server_list << (server.flavor_id || "")
           server_list << (server.image_id || "")
           server_list << server.groups.join(", ")
-          server_list << server.state
+          server_list << begin
+            case server.state
+            when 'shutting-down'
+              ui.color(server.state, :red)
+            when 'pending'
+              ui.color(server.state, :yellow)
+            else
+              ui.color(server.state, :green)
+            end
+          end
         end
         puts ui.list(server_list, :columns_across, 6)
       end

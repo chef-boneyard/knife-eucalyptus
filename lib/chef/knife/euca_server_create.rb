@@ -20,9 +20,15 @@ require 'chef/knife/euca_base'
 
 class Chef
   class Knife
-    class EucaServerCreate < EucaBase
+    class EucaServerCreate < Knife
+
+      include Knife::EucaBase
 
       deps do
+        require 'fog'
+        require 'net/ssh/multi'
+        require 'readline'
+        require 'chef/json_compat'
         require 'chef/knife/bootstrap'
         Chef::Knife::Bootstrap.load_deps
       end
