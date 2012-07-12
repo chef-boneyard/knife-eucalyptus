@@ -118,11 +118,11 @@ class Chef
         :proc => lambda { |o| o.split(/[\s,]+/) },
         :default => []
 
-      option :no_host_key_verify,
-        :long => "--no-host-key-verify",
+      option :host_key_verify,
+        :long => "--[no-]host-key-verify",
         :description => "Disable host key verification",
         :boolean => true,
-        :default => false
+        :default => true
 
       def tcp_test_ssh(hostname)
         tcp_socket = TCPSocket.new(hostname, 22)
@@ -221,7 +221,7 @@ class Chef
         bootstrap.config[:template_file] = locate_config_value(:template_file)
         bootstrap.config[:environment] = config[:environment]
         # may be needed for vpc_mode
-        bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
+        bootstrap.config[:host_key_verify] = config[:host_key_verify]
         bootstrap
       end
 
